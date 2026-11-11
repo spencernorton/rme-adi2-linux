@@ -1,4 +1,4 @@
 // Shared by the Xcode app target and the command-line development bundle.
 PRODUCT_BUNDLE_IDENTIFIER = tech.norvi.ADI2Companion
 MARKETING_VERSION = 1.0.0
-CURRENT_PROJECT_VERSION = 1
+CURRENT_PROJECT_VERSION = 2

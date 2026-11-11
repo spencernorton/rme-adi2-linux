@@ -5,6 +5,22 @@ import ADI2Core
 
 typealias ParameterKey = ParameterAddress
 
+/// The first Store release exposes live control and local profiles only.
+/// Internal memory protocol coverage opts in explicitly through fake transports.
+struct ReleaseCapabilities: Sendable {
+    let deviceMemory: Bool
+    static let storeRelease = ReleaseCapabilities(deviceMemory: false)
+
+    func permitsEQParameter(_ index: Int) -> Bool {
+        deviceMemory || ![27,28].contains(index)
+    }
+    func permitsDeviceParameter(_ index: Int) -> Bool {
+        // Remap-key choices include setup/preset recalls; omit that whole
+        // family rather than changing the meaning of the device's enum values.
+        deviceMemory || (!(25...29).contains(index) && index != 62)
+    }
+}
+
 @MainActor final class AppModel: ObservableObject {
     @Published var profile = EQProfile.flat
     @Published var selectedOutput: Output = .phones
@@ -34,6 +50,8 @@ typealias ParameterKey = ParameterAddress
     private var demoPresets: [Int:EQProfile] = [:]
     private var demoSetups: [Int:[ParameterKey:Int]] = [:]
     private let library: FileProfileLibrary
+    private let capabilities: ReleaseCapabilities
+    var deviceMemoryAvailable: Bool { capabilities.deviceMemory }
     var availableOutputs: [Output] { deviceModel == .dac ? [.line,.phones] : Output.allCases }
     private let midi: MIDIConnection
     private var activeDevice: MIDIDevice?
@@ -43,12 +61,17 @@ typealias ParameterKey = ParameterAddress
     var canWrite: Bool { connected && !demoMode && !syncing && activeDevice?.model == deviceModel }
     var parameterAddress: Int { section == "device" ? 12 : section == "input" ? 0 : selectedOutput.channel }
     var eqParameterAddress: Int { section == "input" ? (eqSide == "right" ? 2 : 1) : (eqSide == "right" ? selectedOutput.right : selectedOutput.left) }
-    var eqParameters: [ParameterDefinition] { ParameterRegistry.eq.filter { eqSide != "right" || (3...19).contains($0.index) } }
+    var eqParameters: [ParameterDefinition] {
+        ParameterRegistry.eq.filter {
+            capabilities.permitsEQParameter($0.index) && (eqSide != "right" || (3...19).contains($0.index))
+        }
+    }
     func eqRealValue(_ p: ParameterDefinition) -> Double {
         guard let raw = values[ParameterKey(address:eqParameterAddress,index:p.index)] else { return p.defaultValue }
         return p.kind == "freq" ? Double(raw) : Double(raw) * p.increment
     }
     func setEQParameter(_ p: ParameterDefinition, value: Double) {
+        guard capabilities.permitsEQParameter(p.index) else { return }
         guard eqSide != "right" || (3...19).contains(p.index) else { return }
         guard value.isFinite, (p.minimum...p.maximum).contains(value), demoMode || (canWrite && values[ParameterKey(address:eqParameterAddress,index:p.index)] != nil) else { return }
         do {
@@ -62,10 +85,14 @@ typealias ParameterKey = ParameterAddress
         } catch { errorMessage = error.localizedDescription; disconnect() }
     }
     var parameters: [ParameterDefinition] {
-        section == "device" ? ParameterRegistry.device(for: deviceModel) : section == "input" ? ParameterRegistry.input(for: deviceModel) : ParameterRegistry.output(for: deviceModel, output: selectedOutput)
+        if section == "device" {
+            return ParameterRegistry.device(for: deviceModel).filter { capabilities.permitsDeviceParameter($0.index) }
+        }
+        return section == "input" ? ParameterRegistry.input(for: deviceModel) : ParameterRegistry.output(for: deviceModel, output: selectedOutput)
     }
 
-    init(midi: MIDIConnection? = nil, library: FileProfileLibrary? = nil) {
+    init(midi: MIDIConnection? = nil, library: FileProfileLibrary? = nil, capabilities: ReleaseCapabilities = .storeRelease) {
+        self.capabilities = capabilities
         self.library = library ?? FileProfileLibrary(directory:(try? FileProfileLibrary.defaultDirectory()) ?? FileManager.default.temporaryDirectory.appendingPathComponent("ADI2Companion-Profiles"))
         self.midi = midi ?? CoreMIDILink()
         self.midi.onDevicesChanged = { [weak self] in self?.refreshDevices() }
@@ -212,6 +239,7 @@ typealias ParameterKey = ParameterAddress
     func saveDevicePreset() {
         var attempted = false
         do {
+            try requireDeviceMemory()
             guard canWrite || demoMode else { throw ADI2Error.invalid("Connect and sync the ADI-2 before writing a device slot.") }
             let messages = try profile.presetMessages(device:deviceModel.deviceID,slot:selectedPresetSlot,name:presetName)
             if demoMode {
@@ -231,6 +259,7 @@ typealias ParameterKey = ParameterAddress
     func loadDevicePreset() {
         var attempted = false
         do {
+            try requireDeviceMemory()
             guard canWrite || demoMode else { throw ADI2Error.invalid("Connect and sync the ADI-2 before recalling a device slot.") }
             let message = try ADI2Protocol.loadEQPreset(device:deviceModel.deviceID,output:selectedOutput,slot:selectedPresetSlot)
             if demoMode {
@@ -251,6 +280,7 @@ typealias ParameterKey = ParameterAddress
     func saveDeviceSetup() {
         var attempted = false
         do {
+            try requireDeviceMemory()
             guard canWrite || demoMode else { throw ADI2Error.invalid("Connect and sync the ADI-2 before saving a setup.") }
             let message = try ADI2Protocol.setup(device:deviceModel.deviceID,slot:selectedSetupSlot,save:true)
             if demoMode { demoSetups[selectedSetupSlot] = values; status = "Saved demo setup \(selectedSetupSlot). No MIDI was sent."; return }
@@ -261,6 +291,7 @@ typealias ParameterKey = ParameterAddress
     func loadDeviceSetup() {
         var attempted = false
         do {
+            try requireDeviceMemory()
             guard canWrite || demoMode else { throw ADI2Error.invalid("Connect and sync the ADI-2 before recalling a setup.") }
             let message = try ADI2Protocol.setup(device:deviceModel.deviceID,slot:selectedSetupSlot,save:false)
             if demoMode {
@@ -272,6 +303,9 @@ typealias ParameterKey = ParameterAddress
             hasDraft = false; drafts = [:]; importWarnings = []
             requestSync()
         } catch { errorMessage = error.localizedDescription; if attempted { disconnect() } }
+    }
+    private func requireDeviceMemory() throws {
+        guard deviceMemoryAvailable else { throw ADI2Error.invalid("Device memory operations are not available in this release.") }
     }
     func updateBand(index: Int, band: Band) {
         guard profile.bands.indices.contains(index) else { return }
@@ -308,6 +342,7 @@ typealias ParameterKey = ParameterAddress
         return p.kind == "freq" ? Double(raw) : Double(raw) * p.increment
     }
     func setParameter(_ p: ParameterDefinition, value: Double) {
+        guard parameterAddress != 12 || capabilities.permitsDeviceParameter(p.index) else { return }
         // Read-only sample-rate display, missing state and out-of-range edits never write.
         guard !(parameterAddress == 12 && p.index == 16), value.isFinite, (p.minimum...p.maximum).contains(value) else { return }
         guard demoMode || (canWrite && values[ParameterKey(address:parameterAddress,index:p.index)] != nil) else { return }

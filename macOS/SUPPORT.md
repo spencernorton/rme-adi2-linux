@@ -27,6 +27,11 @@ Hardware control needs a USB-connected ADI-2 with compatible firmware and MIDI
 Control enabled on the device. Offline EQ editing and the clearly marked demo
 mode are available without hardware. Demo mode does not control a physical DAC.
 
+The first paid Mac release is being prepared around ADI-2 DAC live EQ, volume and parameter
+controls, offline editing, and local profiles. Choose **Local profiles** to save
+or load an EQ draft on your Mac; loading a profile does not change hardware
+until you choose Apply. Pro/2/4 hardware has not been qualified with this app.
+
 The app does not operate a user account system, collect telemetry or upload EQ
 profiles. Saved local profiles remain on your Mac unless you export/share them.
 See the privacy policy for the complete explanation and local-data removal.

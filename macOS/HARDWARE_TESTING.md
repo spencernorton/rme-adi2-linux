@@ -1,5 +1,45 @@
 # macOS hardware qualification
 
+## 2026-11-11 — Signed build 1 and first-release scope decision
+
+Distribution-signed ADI-2 Companion 1.0.0 (1), from the verified `ec848fc`
+archive, was tested with an ADI-2 DAC on Apple silicon and macOS 27.2. The signed
+app connected, read the fresh 219-parameter state, and completed a neutral EQ
+Apply followed by fresh hardware readback. The prior basic volume/readback
+and accepted physical-knob feedback observations remain limited to this DAC
+workflow; they do not establish arbitrary EQ transitions or every parameter.
+
+The DAC was observed at USB 80 / DSP 55 and later USB 81 / DSP 62. Bounded
+memory diagnostics returned all 34 stored EQ band values matching the fresh
+Phones baseline, but the requested name did not round-trip. An isolated
+name-only attempt after the commit had settled failed on USB 80 / DSP 55.
+The full save/name path failed again on USB 81 / DSP 62 after the update.
+The cause remains unknown; neither a different commit index nor an alternate
+name encoding was established. The memory diagnostics were isolated unsigned
+helpers using native protocol/model paths, not evidence of a successful memory
+workflow in the final signed app. No complete EQ/setup recall qualification was
+accepted from those attempts.
+
+Persistent device EQ/setup storage, naming and recall are excluded from the
+first paid Mac release. The prepared scope patch disables the immutable device
+memory capability, removes the associated UI and generic controls, and rejects
+model entry points. Local profiles, offline EQ editing and live EQ/volume/
+non-memory parameter controls remain in scope. Internal protocol code, explicit
+opt-in development tests and Linux behavior are retained. There is no user
+switch or release promise for device memory.
+
+Build 1 was delivered, processed and attached to the App Store Connect version
+draft, together with two screenshots and a physical-camera hardware video.
+No App Review submission or public release has occurred. Planned build 2 has
+not yet been built, signed, uploaded or hardware-qualified. The scope patch
+passed the existing CLI software checks: 51 cases / 342 assertions, zero failures
+(33 core / 205 assertions and 18 app-model / 137 assertions), using fake MIDI.
+This is not physical qualification of build 2. Pro/2/4 hardware,
+Intel runtime behavior, other OS versions and unplug/replug remain unqualified.
+
+The earlier entry below preserves its original development-test scope and
+remaining-work statements; the later evidence above supersedes those statuses.
+
 ## 2026-11-11 — ADI-2 DAC, basic sandbox communication
 
 Test environment: Apple silicon Mac, macOS 27.2, ADI-2 DAC USB MIDI Port 1,

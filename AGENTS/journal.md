@@ -1,3 +1,31 @@
+## 2026-11-11 — Prepare the first Store release without device memory
+
+- The isolated settled name-only attempt failed on DAC USB 80 / DSP 55, and the
+  full save/name path failed again on USB 81 / DSP 62 after the update. The
+  first paid Store release therefore excludes persistent hardware
+  EQ/setup save, recall and naming controls. No alternate encoding or further
+  hardware experiment is inferred from the unresolved protocol behavior.
+- Added an immutable, default-off Mac release capability. The device-memory
+  sections and confirmations are absent, generic preset/recall-key controls are
+  filtered, and model dispatch rejects those operations before MIDI. Local
+  profiles, import/export, offline drafts and live EQ/volume controls remain.
+  Internal protocol/model coverage opts in explicitly through fake transports;
+  the Linux app and shared profile format are unchanged.
+- Preserved all 17 model cases and added one additional fake-MIDI regression
+  covering valid-but-blocked memory operations, generic-selector bypass attempts,
+  retained live control and local profiles. After source review, the existing
+  CLI harness passed 51 cases / 342 assertions, zero failures (core 33/205;
+  app model 18/137). No app build, signing, upload or publication was performed
+  for this candidate before that software check.
+- Updated Mac help/listing scope and prepared version 1.0.0 / build 2. The
+  delivered build 1 and its historical evidence remain distinct: root verified
+  neutral EQ Apply and a fresh 219-parameter readback, but this does not establish
+  physical qualification of the unbuilt build 2. The DAC has been released.
+- Next: review this isolated follow-up, place only its approved commit on the
+  actual squashed main, run native CI, and validate a fresh build 2 and
+  matching review assets. No future memory feature or App Store release is
+  promised by this preparation.
+
 ## 2026-11-11 — Separate fader CI timing from real-time acceptance
 
 - Hosted run 43051754638 at the documentation-only `f8a2a35` head passed all

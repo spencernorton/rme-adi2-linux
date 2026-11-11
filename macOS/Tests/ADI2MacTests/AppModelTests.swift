@@ -187,7 +187,7 @@ func XCTUnwrap<T>(_ value:T?,file:StaticString=#filePath,line:UInt=#line) throws
         XCTAssertTrue(fake.connectedDevice == nil)
     }
     func testPresetSaveStagesBandsThenCommitsAndRecallResyncs() async throws {
-        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory))
+        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory),capabilities:ReleaseCapabilities(deviceMemory:true))
         defer {model.disconnect()}
         try ready(fake,model)
         model.loadExample();model.selectedPresetSlot=2;model.presetName="Studio"
@@ -207,7 +207,7 @@ func XCTUnwrap<T>(_ value:T?,file:StaticString=#filePath,line:UInt=#line) throws
         XCTAssertTrue(model.canWrite);XCTAssertFalse(model.hasDraft)
     }
     func testInvalidMemorySlotsAndNamesNeverSendMIDI() async throws {
-        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory))
+        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory),capabilities:ReleaseCapabilities(deviceMemory:true))
         defer {model.disconnect()}
         try ready(fake,model)
         model.selectedPresetSlot=0;model.saveDevicePreset();model.loadDevicePreset()
@@ -218,7 +218,7 @@ func XCTUnwrap<T>(_ value:T?,file:StaticString=#filePath,line:UInt=#line) throws
         XCTAssertNotNil(model.errorMessage)
     }
     func testDemoMemoryRoundTripsWithoutPhysicalMIDI() async throws {
-        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory))
+        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory),capabilities:ReleaseCapabilities(deviceMemory:true))
         defer {model.disconnect()}
         model.startDemo();model.selectedPresetSlot=3;model.presetName="Demo reference"
         let reference=model.profile.bands
@@ -233,7 +233,7 @@ func XCTUnwrap<T>(_ value:T?,file:StaticString=#filePath,line:UInt=#line) throws
         XCTAssertTrue(model.demoMode);XCTAssertFalse(model.canWrite)
     }
     func testSetupCommandsRequireFreshReadAndFailureRevokesReadiness() async throws {
-        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory))
+        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory),capabilities:ReleaseCapabilities(deviceMemory:true))
         defer {model.disconnect()}
         try ready(fake,model)
         model.selectedSetupSlot=4;model.saveDeviceSetup()
@@ -262,7 +262,7 @@ func XCTUnwrap<T>(_ value:T?,file:StaticString=#filePath,line:UInt=#line) throws
         XCTAssertEqual(fake.attempts.count,0)
     }
     func testRightEQSurfaceAndWriteGuardExcludeSharedControls() async throws {
-        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory))
+        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory),capabilities:ReleaseCapabilities(deviceMemory:true))
         defer {model.disconnect()}
         try ready(fake,model)
         XCTAssertTrue(model.channelNotice == nil,"Equal bands do not differ because optional right shared fields are absent.")
@@ -287,6 +287,54 @@ func XCTUnwrap<T>(_ value:T?,file:StaticString=#filePath,line:UInt=#line) throws
         XCTAssertEqual(try ADI2Protocol.parseParameters(message.payload),[ParameterValue(address:8,index:4,raw:2)])
         model.eqSide="left"
         for index in [2,20,28] { XCTAssertTrue(model.eqParameters.contains {$0.index == index}) }
+    }
+    func testStoreReleaseBlocksDeviceMemoryAndKeepsLiveControlAndLocalProfiles() async throws {
+        let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory))
+        defer {model.disconnect()}
+        XCTAssertFalse(model.deviceMemoryAvailable)
+        try ready(fake,model)
+        var observed = [try ADI2Protocol.encode(address:7,index:27,raw:0),try ADI2Protocol.encode(address:7,index:28,raw:0)]
+        for index in [25,26,27,28,29,62] { observed.append(try ADI2Protocol.encodeDevice(index:index,raw:0)) }
+        fake.deliver(observed)
+        let before=fake.attempts.count
+        model.selectedPresetSlot=1;model.presetName="A valid name";model.selectedSetupSlot=1
+        model.saveDevicePreset();model.loadDevicePreset();model.saveDeviceSetup();model.loadDeviceSetup()
+        XCTAssertEqual(fake.attempts.count,before,"The Store capability blocks otherwise valid device-memory calls before any MIDI.")
+        XCTAssertTrue(model.canWrite,"Rejecting memory operations does not revoke ordinary live controls.")
+        XCTAssertTrue([2,4,20,21,26].allSatisfy { index in model.eqParameters.contains {$0.index == index} })
+        XCTAssertFalse(model.eqParameters.contains {[27,28].contains($0.index)})
+        for index in [27,28] {
+            let parameter=try XCTUnwrap(ParameterRegistry.eq.first {$0.index == index})
+            model.setEQParameter(parameter,value:1)
+        }
+        model.section="device"
+        XCTAssertFalse(model.parameters.contains { [25,26,27,28,29,62].contains($0.index) })
+        for index in [25,26,27,28,29,62] {
+            let parameter=try XCTUnwrap(ParameterRegistry.device(for:.dac).first {$0.index == index})
+            model.setParameter(parameter,value:1)
+        }
+        XCTAssertEqual(fake.attempts.count,before,"Generic parameter methods cannot restore the hidden memory or recall-key controls.")
+        model.section="output"
+        let volume=try XCTUnwrap(model.parameters.first {$0.index == 12})
+        model.setParameter(volume,value:-35)
+        XCTAssertEqual(fake.sent.count,before+1,"Live volume control remains available.")
+        model.loadExample();model.applyProfile()
+        XCTAssertEqual(fake.sent.count,before+3,"Live EQ Apply and its fresh read remain available.")
+        XCTAssertEqual(ADI2Protocol.parse(fake.sent[fake.sent.count-2])?.command,2)
+        XCTAssertEqual(ADI2Protocol.parse(fake.sent.last!)?.command,3)
+        model.startDemo();model.loadExample()
+        let draft=model.profile,values=model.values,attempts=fake.attempts.count
+        model.saveDevicePreset();model.loadDevicePreset();model.saveDeviceSetup();model.loadDeviceSetup()
+        XCTAssertEqual(model.profile,draft)
+        XCTAssertEqual(model.values,values)
+        XCTAssertTrue(model.hasDraft)
+        XCTAssertEqual(fake.attempts.count,attempts)
+        model.profile.name="Local Store profile";model.saveLocalProfile()
+        let saved=try XCTUnwrap(model.localProfiles.first)
+        model.loadFlat();model.loadLocalProfile(saved)
+        XCTAssertEqual(model.profile.bands,draft.bands)
+        XCTAssertTrue(model.hasDraft,"Loading a local profile remains an offline draft.")
+        XCTAssertEqual(fake.attempts.count,attempts)
     }
     func testDeviceRemovalRevokesWriteReadiness() async throws {
         let fake=FakeMIDIConnection(),model=AppModel(midi:fake,library:FileProfileLibrary(directory:fake.libraryDirectory))
@@ -319,8 +367,9 @@ func XCTUnwrap<T>(_ value:T?,file:StaticString=#filePath,line:UInt=#line) throws
         try await tests.testSetupCommandsRequireFreshReadAndFailureRevokesReadiness()
         try await tests.testLocalProfileLoadStaysDraftUntilExplicitApply()
         try await tests.testRightEQSurfaceAndWriteGuardExcludeSharedControls()
+        try await tests.testStoreReleaseBlocksDeviceMemoryAndKeepsLiveControlAndLocalProfiles()
         try await tests.testDeviceRemovalRevokesWriteReadiness()
-        print("AppModel: 17 cases, \(assertionCount) assertions, \(failureCount) failures")
+        print("AppModel: 18 cases, \(assertionCount) assertions, \(failureCount) failures")
         if failureCount > 0 {exit(1)}
     }
 }

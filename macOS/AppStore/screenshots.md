@@ -3,6 +3,10 @@
 Capture genuine views of the final app. This plan is not a set of completed
 screenshots and does not authorize hardware changes during capture.
 
+Two build 1 screenshots are attached to the existing App Store Connect draft.
+Build 2 is a planned, unbuilt scope change; verify or recapture its final UI
+before using these instructions as evidence of the shipping build.
+
 ## Capture format
 
 Use one consistent **2880 × 1800 pixel** output size, or **1440 × 900 pixels**
@@ -17,7 +21,7 @@ checked November 11, 2026.
 Keep the real title bar and enough sidebar/banner context to identify the app
 and its state. Use a rectangular opaque capture; window-shadow screenshots may
 contain transparency. Do not stretch the interface, invent controls, overlay a
-fake Connected label, or remove an Experimental/demo notice from a shown feature.
+fake Connected label, or remove a demo notice from a shown feature.
 Avoid unrelated windows, personal files, endpoint identifiers and private profile
 names. Use original app artwork; do not add RME logos or endorsements.
 
@@ -64,7 +68,7 @@ operations; they do not demonstrate hardware memory writes.
 | --- | --- | --- | --- |
 | 1 / `01-five-band-eq.png` | Explore demo; choose Phones 1/2; import `fixtures/listening-profile.json`. Leave the draft unapplied. | The visible demo banner, main fader, response graph, all five bands and Apply action. Use the new whole-fader build. | Show the native five-band editor and explicit draft workflow. A static screenshot does not prove smooth motion. |
 | 2 / `02-import-review.png` | In demo, import `fixtures/import-example.txt`; scroll only as needed to show the result and import adjustments. | The demo banner, resulting five-band EQ and actual warnings about reduction/preamp handling. Capture after the file picker closes. | Show that imports are reviewed and hardware-limit adjustments are reported. Do not imply seven bands or a preamp are applied to the DAC. |
-| 3 / `03-local-profiles.png` | In the isolated session, save two or three clearly named example profiles; open Profiles and device memory and keep the local-library area in view. | Destination output, Local profile library, saved example names and Load draft actions. | Show local storage and reusable EQ drafts. Avoid making hardware memory the subject of this image while it remains unqualified. |
+| 3 / `03-local-profiles.png` | In the isolated session, save two or three clearly named example profiles; choose Local profiles in the sidebar. | Destination output, Local profile library, saved example names and Load draft actions. | Show local storage and reusable EQ drafts. |
 
 ## Optional supporting images
 

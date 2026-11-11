@@ -1,6 +1,6 @@
 {
-  "draft_status": "Prepared locally; not submitted",
-  "source_revision": "ea719ef",
+  "draft_status": "Build 1 delivered, processed and attached; planned build 2 scope passed CLI software checks but is unbuilt and not submitted",
+  "source_revision": "dfade65",
   "prepared_date": "2026-11-11",
   "app_record": {
     "name": "ADI-2 Companion",
@@ -10,18 +10,19 @@
     "bundle_identifier": "tech.norvi.ADI2Companion",
     "minimum_macos": "14.0",
     "version": "1.0.0",
-    "build": "1",
+    "build": "2",
     "copyright": "2026 Spencer Norton",
-    "sku": "tech.norvi.adi2companion.mac"
+    "sku": "tech.norvi.adi2companion.mac",
+    "build_status": "Planned scope change; not yet built, signed, uploaded or hardware-qualified"
   },
   "localization": {
     "locale": "en-US",
     "name": "ADI-2 Companion",
     "subtitle": "Parametric EQ and MIDI control",
     "promotional_text": "Build five-band EQ profiles, keep a local profile library and follow ADI-2 DAC volume changes. Native Mac controls, offline editing and demo mode included.",
-    "description": "Build a five-band EQ profile on your Mac, keep your settings organized, and control your RME ADI-2 DAC through USB MIDI.\n\nADI-2 Companion is an independent native Mac app for listening setups that use an ADI-2 DAC. Shape each band with frequency, gain, Q and filter-type controls, and inspect the combined response curve before applying a profile to your output.\n\nPROFILE EDITING\n• Edit five parametric bands with a response graph and precise numeric controls.\n• Import Equalizer APO or REW filter text, CSV filter data, and compatible JSON profiles.\n• Review warnings when an import needs fewer bands or adjusted values.\n• Keep profiles in a local library and export JSON copies to share or back up.\n• Build and edit profiles offline without connecting hardware.\n\nHARDWARE CONTROL\n• Connect explicitly through USB MIDI and read the device settings before controls become available.\n• Adjust output volume in 0.1 dB steps with keyboard and accessibility controls.\n• Follow front-panel volume changes with a smoothly moving fader.\n• Review EQ changes as a draft before choosing Apply to both output channels.\n\nExplore the app in its clearly marked demo mode when your DAC is not connected. Demo mode sends no MIDI.\n\nREQUIREMENTS AND CURRENT LIMITS\nmacOS 14 or later. Hardware control requires an RME ADI-2 DAC with compatible MIDI-control firmware, a USB connection, and MIDI Control enabled on the device. The app does not record or process playback audio, change the Mac's sample rate, or turn the DAC on remotely.\n\nDevice EQ-slot and setup-memory controls are marked Experimental in this build and have not yet been verified with connected hardware. ADI-2 Pro and ADI-2/4 Pro hardware have not yet been qualified with this Mac build.\n\nNo accounts, advertising or telemetry. Profiles stay on your Mac unless you export or share them yourself.\n\nIndependent software. Not affiliated with or endorsed by RME. Product names identify compatible hardware and belong to their respective owners.",
+    "description": "Build a five-band EQ profile on your Mac, keep your settings organized, and control your RME ADI-2 DAC through USB MIDI.\n\nADI-2 Companion is an independent native Mac app for listening setups that use an ADI-2 DAC. Shape each band with frequency, gain, Q and filter-type controls, and inspect the combined response curve before applying a profile to your output.\n\nPROFILE EDITING\n• Edit five parametric bands with a response graph and precise numeric controls.\n• Import Equalizer APO or REW filter text, CSV filter data, and compatible JSON profiles.\n• Review warnings when an import needs fewer bands or adjusted values.\n• Keep profiles in a local library and export JSON copies to share or back up.\n• Build and edit profiles offline without connecting hardware.\n\nHARDWARE CONTROL\n• Connect explicitly through USB MIDI and read the device settings before controls become available.\n• Adjust output volume in 0.1 dB steps with keyboard and accessibility controls.\n• Follow front-panel volume changes with a smoothly moving fader.\n• Review EQ changes as a draft before choosing Apply to both output channels.\n• Adjust live output and device parameters through native controls.\n\nExplore the app in its clearly marked demo mode when your DAC is not connected. Demo mode sends no MIDI.\n\nREQUIREMENTS AND CURRENT LIMITS\nmacOS 14 or later. Hardware control requires an RME ADI-2 DAC with compatible MIDI-control firmware, a USB connection, and MIDI Control enabled on the device. The app does not record or process playback audio, change the Mac's sample rate, or turn the DAC on remotely.\n\nHardware validation covers an ADI-2 DAC on Apple silicon with macOS 27.2, including USB 81 / DSP 62 firmware. ADI-2 Pro and ADI-2/4 Pro hardware, Intel runtime behavior and other OS combinations have not been qualified with this Mac app.\n\nNo accounts, advertising or telemetry. Profiles stay on your Mac unless you export or share them yourself.\n\nIndependent software. Not affiliated with or endorsed by RME. Product names identify compatible hardware and belong to their respective owners.",
     "keywords": "equalizer,parametric,midi,dac,headphones,audio,filters,profile,usb,studio",
-    "review_notes": "ADI-2 Companion is an independent local macOS EQ editor and USB MIDI controller. It is intended for ADI-2 DAC owners and people preparing five-band EQ profiles offline. It is a paid upfront, one-time purchase with no in-app purchases or subscriptions. It is not RME's official Remote application. The icon and interface artwork are original.\n\nNo account or reviewer login is needed. There is no subscription flow, network backend, audio capture, privileged helper or driver installer. The app uses the macOS App Sandbox and user-selected file read/write access. Its local profile library is stored inside its sandbox container.\n\nWITHOUT HARDWARE\nChoose Explore demo in the sidebar, or Device > Explore Demo in the menu bar. Keep the visible demo banner in view. Select an output and edit the EQ bands; Apply in demo updates simulated state only. Import/Export and local profile Save/Load work with local files. Loading a local profile creates a draft and does not send MIDI.\n\nWITH HARDWARE\nUse a physical ADI-2 DAC connected to the Mac by USB. Enable MIDI Control on the device; current DAC documentation places it under Remap Keys/Diag, with wording dependent on firmware. Select the DAC's MIDI endpoint and click Connect. The app reads fresh output/EQ state before enabling writes. Sync reads hardware settings again. Output volume and enabled parameter controls write immediately. EQ edits remain drafts until Apply EQ to both channels is chosen.\n\nDEVICE MEMORY\nThe separate Profiles and device memory view contains 20 EQ slots and 9 device setups. These operations are visibly marked Experimental and are not yet hardware-qualified. Every live recall/save requires confirmation. An EQ-slot recall changes live EQ and replaces the editor draft; setup recall can change device-wide volume and routing. EQ-slot saves contain five bands, not Bass/Treble or Loudness switches. Setup saves use current hardware state, excluding unapplied drafts.\n\nVALIDATION RECORDED SO FAR\nPhysical ADI-2 DAC on Apple silicon with macOS 27.2: MIDI discovery, a complete 219-parameter read, and a 0.1 dB Phones-volume reduction/restoration with fresh readback passed. The user also confirmed smooth live feedback while turning the DAC's physical volume knob. These observations do not establish Pro/2/4 compatibility, persistent-memory reliability, EQ Apply readback, or all supported Mac/OS combinations.\n\nA physical-camera hardware interaction video, the exact tested final-build/device/firmware list, and the review contact must accompany the submission. Demo mode does not replace the required hardware video."
+    "review_notes": "PREPARATION STATUS\nThese notes describe planned version 1.0.0 build 2, which has not yet been built, signed, uploaded or hardware-qualified. Build 1 was delivered, processed and attached to the existing version draft with two screenshots and a physical-camera hardware interaction video. No App Review submission or public release has occurred. Reconcile these notes and assets with the final validated build before submission.\n\nADI-2 Companion is an independent local macOS EQ editor and USB MIDI controller for ADI-2 DAC owners and people preparing five-band EQ profiles offline. It is a paid upfront, one-time purchase with no in-app purchases or subscriptions. It is not RME's official Remote application. The icon and interface artwork are original.\n\nNo account or reviewer login is needed. There is no subscription flow, network backend, audio capture, privileged helper or driver installer. The app uses App Sandbox and user-selected file read/write access. Its local profile library stays inside its sandbox container.\n\nWITHOUT HARDWARE\nChoose Explore demo in the sidebar, or Device > Explore Demo in the menu bar. Keep the demo banner visible. Select an output and edit the EQ bands; Apply in demo updates simulated state only. Import/Export and local profile Save/Load use local files. Choose Local profiles in the sidebar to open the Profiles page. Loading a local profile creates a draft and sends no MIDI.\n\nWITH HARDWARE\nUse a physical ADI-2 DAC connected to the Mac by USB. Enable MIDI Control on the device; the menu wording depends on firmware. Select the DAC's MIDI endpoint and click Connect. Fresh output/EQ state is read before writes are enabled. Sync reads hardware settings again. Output volume and enabled live parameter controls write immediately. EQ band edits remain drafts until Apply EQ to Both Channels is chosen.\n\nVALIDATION RECORDED\nOn Apple silicon and macOS 27.2, the physical DAC completed discovery, fresh 219-parameter reads and a 0.1 dB Phones-volume reduction/restoration with readback. The owner confirmed smooth physical-knob feedback. Distribution-signed build 1 passed a neutral EQ Apply and fresh readback. Firmware was observed at USB 80 / DSP 55 and later USB 81 / DSP 62. These observations do not qualify Pro/2/4 hardware, Intel runtime, unplug/replug, every parameter or arbitrary EQ transitions, and they do not validate the build 2 scope change.\n\nThe first paid Mac release excludes persistent device preset/setup operations. Include the exact final app revision, tested Mac/OS/device/firmware list, required hardware video and actual review contact in the finished submission."
   },
   "candidate_urls": {
     "support": "https://github.com/spencernorton/rme-adi2-linux/blob/main/macOS/SUPPORT.md",
@@ -30,15 +31,20 @@
   },
   "url_validation": {
     "checked_date": "2026-11-11",
-    "support": "New support page prepared locally; publication/HTTP verification pending; linked issues page is reachable",
-    "privacy_policy": "404 at preparation time; publish policy before using this URL",
-    "marketing": "404 at preparation time; publish page before using this URL"
+    "checked_at_utc": "2026-11-11T19:25:27Z",
+    "baseline_merge_commit": "9ef636f07a00a07a3e9d3deff5dd972eaa0996ee",
+    "baseline_source_revision": "dfade65a14f3dfaf4b0acc6303682e125b4d207a",
+    "support": "Verified anonymously: GitHub HTML and raw HTTP 200, expected title and raw bytes matching the reviewed baseline. First-release scope follow-up remains unpublished; reverify after its merge.",
+    "privacy_policy": "Verified anonymously: GitHub HTML and raw HTTP 200, expected title and raw bytes matching the reviewed baseline. Recheck the final policy against the shipping binary.",
+    "marketing": "Verified anonymously: GitHub HTML and raw HTTP 200, expected title and raw bytes matching the reviewed baseline. First-release scope follow-up remains unpublished; reverify after its merge."
   },
   "submission_notes": [
     "Do not upload this JSON directly as an App Store Connect API payload.",
-    "Review notes describe current evidence, including unqualified features. Reconcile them with final release qualification.",
-    "Description discloses the Experimental memory controls instead of promising persistent-memory reliability.",
-    "The initial release does not have a What’s New field.",
+    "This draft describes planned build 2, not the processed build 1 currently attached to the version draft.",
+    "The first paid Mac listing covers local profiles, offline editing and live DAC controls; it offers no persistent device preset/setup operations.",
+    "Build 2 scope passed 51 CLI software cases / 342 assertions with zero failures using fake MIDI. Its native CI, archive, signature, accepted upload and runtime evidence remain pending.",
+    "Review the existing two screenshots and physical-camera video against the final submitted scope.",
+    "The initial release has no What’s New field.",
     "Promotional text is optional; use only where App Store Connect exposes it for this platform."
   ],
   "pricing": {
@@ -51,11 +57,13 @@
   },
   "remaining_store_fields": {
     "territories": null,
-    "public_support_url_status": "Public support page prepared; publish and verify before submission",
-    "privacy_url_status": "Publish and verify before submission",
-    "screenshots": "Capture pending",
-    "distribution_build": "Archive/sign/upload validation pending",
-    "questionnaires": "Final privacy, age-rating, export-compliance and applicable storefront declarations pending"
+    "public_support_url_status": "Baseline page verified HTTP 200; publish and reverify the first-release scope follow-up and contact route",
+    "privacy_url_status": "Baseline policy verified HTTP 200; reconcile with the final shipping binary",
+    "screenshots": "Two build 1 images attached; verify or recapture the final build 2 UI",
+    "hardware_video": "Physical-camera build 1 hardware video uploaded; reconcile with the final submission",
+    "distribution_build": "Build 1 delivered, processed and attached; planned build 2 is unbuilt, unsigned and not uploaded",
+    "questionnaires": "Reconcile existing privacy, age-rating, export and storefront declarations with the final shipping binary"
   },
-  "private_account_fields": "Maintain team, seller/account information and review contact only in App Store Connect; do not copy private values into this public pack"
+  "private_account_fields": "Maintain team, seller/account information and review contact only in App Store Connect; do not copy private values into this public pack",
+  "source_revision_note": "Baseline before the uncommitted first-release scope patch; replace with the reviewed build 2 revision after it exists"
 }

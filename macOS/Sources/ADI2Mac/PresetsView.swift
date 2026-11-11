@@ -11,7 +11,7 @@ struct PresetsView: View {
     @PresetViewState<Bool> private var confirmLoadSetup = false
     @PresetViewState<Bool> private var confirmSaveSetup = false
 
-    private var canUseDeviceMemory: Bool { model.canWrite || model.demoMode }
+    private var canUseDeviceMemory: Bool { model.deviceMemoryAvailable && (model.canWrite || model.demoMode) }
     private var presetNameIsValid: Bool {
         model.presetName.utf8.count <= 14 && model.presetName.unicodeScalars.allSatisfy { (32...126).contains($0.value) }
     }
@@ -23,9 +23,9 @@ struct PresetsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Profiles and device memory")
+                Text("Profiles")
                     .font(.largeTitle.weight(.semibold))
-                Text("Keep EQ profiles on this Mac, or work with the slots in your ADI-2.")
+                Text("Keep EQ profiles in a local library on this Mac.")
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -43,33 +43,11 @@ struct PresetsView: View {
                 Spacer(minLength: 0)
             }
             localLibrary
-            deviceMemory
+            if model.deviceMemoryAvailable {
+                deviceMemory
+            }
         }
         .onAppear(perform: model.refreshProfiles)
-        .confirmationDialog("Load EQ preset \(model.selectedPresetSlot) on \(model.selectedOutput.title)?", isPresented: $confirmLoadPreset, titleVisibility: .visible) {
-            Button("Load EQ preset \(model.selectedPresetSlot) on \(model.selectedOutput.title)", action: model.loadDevicePreset)
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This changes the live output EQ and replaces the current editor draft.")
-        }
-        .confirmationDialog("Overwrite EQ preset \(model.selectedPresetSlot)?", isPresented: $confirmSavePreset, titleVisibility: .visible) {
-            Button("Save \(model.selectedOutput.title) draft to EQ preset \(model.selectedPresetSlot)", role: .destructive, action: model.saveDevicePreset)
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Replace this device slot with the five EQ bands from “\(currentProfileName)”. Bass / Treble and Loudness settings are not saved in this operation.")
-        }
-        .confirmationDialog("Load device setup \(model.selectedSetupSlot)?", isPresented: $confirmLoadSetup, titleVisibility: .visible) {
-            Button("Load device setup \(model.selectedSetupSlot)", action: model.loadDeviceSetup)
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Loading a setup can change volume, routing and settings across the whole device. It also replaces the current editor state.")
-        }
-        .confirmationDialog("Overwrite device setup \(model.selectedSetupSlot)?", isPresented: $confirmSaveSetup, titleVisibility: .visible) {
-            Button("Save current device to setup \(model.selectedSetupSlot)", role: .destructive, action: model.saveDeviceSetup)
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This replaces the slot with the settings currently on your ADI-2. Unapplied EQ drafts are not included.")
-        }
     }
 
     private var localLibrary: some View {
@@ -180,6 +158,30 @@ struct PresetsView: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
+        }
+        .confirmationDialog("Load EQ preset \(model.selectedPresetSlot) on \(model.selectedOutput.title)?", isPresented: $confirmLoadPreset, titleVisibility: .visible) {
+            Button("Load EQ preset \(model.selectedPresetSlot) on \(model.selectedOutput.title)", action: model.loadDevicePreset)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This changes the live output EQ and replaces the current editor draft.")
+        }
+        .confirmationDialog("Overwrite EQ preset \(model.selectedPresetSlot)?", isPresented: $confirmSavePreset, titleVisibility: .visible) {
+            Button("Save \(model.selectedOutput.title) draft to EQ preset \(model.selectedPresetSlot)", role: .destructive, action: model.saveDevicePreset)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Replace this device slot with the five EQ bands from “\(currentProfileName)”. Bass / Treble and Loudness settings are not saved in this operation.")
+        }
+        .confirmationDialog("Load device setup \(model.selectedSetupSlot)?", isPresented: $confirmLoadSetup, titleVisibility: .visible) {
+            Button("Load device setup \(model.selectedSetupSlot)", action: model.loadDeviceSetup)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Loading a setup can change volume, routing and settings across the whole device. It also replaces the current editor state.")
+        }
+        .confirmationDialog("Overwrite device setup \(model.selectedSetupSlot)?", isPresented: $confirmSaveSetup, titleVisibility: .visible) {
+            Button("Save current device to setup \(model.selectedSetupSlot)", role: .destructive, action: model.saveDeviceSetup)
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This replaces the slot with the settings currently on your ADI-2. Unapplied EQ drafts are not included.")
         }
     }
 

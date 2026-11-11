@@ -100,7 +100,7 @@ struct ControlView: View {
                     }
                 }
                 Section("Profiles") {
-                    sidebarItem("Profiles and presets", icon: "square.stack.3d.up", section: "presets")
+                    sidebarItem("Local profiles", icon: "folder", section: "presets")
                     Button { model.section = "output"; model.loadFlat() } label: { Label("Flat response", systemImage: "line.diagonal") }
                     Button { model.section = "output"; model.loadExample() } label: { Label("Example EQ", systemImage: "slider.horizontal.3") }
                 }
@@ -352,7 +352,7 @@ struct ControlView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                Text(model.section == "input" ? "Adjust the left and right input EQ independently. Changes apply to the selected input channel." : "Adjust left and right bands independently. Choose Left for shared EQ, Bass / Treble and preset controls. Applying a profile above replaces both channels.")
+                Text(model.section == "input" ? "Adjust the left and right input EQ independently. Changes apply to the selected input channel." : "Adjust left and right bands independently. Choose Left for shared EQ and Bass / Treble controls. Applying a profile above replaces both channels.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 VStack(spacing: 0) {
