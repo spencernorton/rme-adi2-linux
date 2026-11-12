@@ -1,0 +1,8 @@
+rme-adi2-control (1.1.0) noble; urgency=medium
+
+  * Use the ADI-2 Companion (macOS) app icon at every hicolor size.
+  * First Debian package: desktop entry, AppStream metadata, bundled EQ
+    profile and PipeWire examples.
+  * Find the bundled profiles when installed outside a source checkout.
+
+ -- Spencer Norton <spencernorton@users.noreply.github.com>  Thu, 12 Nov 2026 12:00:00 +0000

@@ -1,0 +1,29 @@
+.TH ADI2-CONTROL 1 "November 2026" "rme-adi2-control 1.1.0" "User Commands"
+.SH NAME
+adi2-control \- remote control and EQ builder for RME ADI-2 DACs
+.SH SYNOPSIS
+.B adi2-control
+.SH DESCRIPTION
+.B adi2-control
+opens a GTK4 window that reads and writes the settings of an RME ADI-2 DAC,
+ADI-2 Pro or ADI-2/4 Pro over USB MIDI SysEx, including a graphical
+5-band parametric EQ for each output. Without a connected unit it works as an
+offline EQ profile builder.
+.PP
+Turn on MIDI Control in the unit's setup menu and connect it by USB. The app
+finds the ALSA raw MIDI port with
+.BR amidi (1)
+and reconnects when the unit is switched on.
+.SH FILES
+.TP
+.I ~/.config/rme-adi2/profiles/
+Local EQ profiles, as JSON.
+.TP
+.I /usr/share/rme-adi2-control/profiles/
+Bundled EQ profiles.
+.TP
+.I /usr/share/doc/rme-adi2-control/examples/pipewire/
+Optional PipeWire and WirePlumber drop-ins for bit-perfect playback.
+.SH SEE ALSO
+.BR adi2-eq (1),
+.BR amidi (1)

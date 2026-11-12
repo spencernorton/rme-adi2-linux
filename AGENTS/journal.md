@@ -1,3 +1,27 @@
+## 2026-11-12 — Linux app takes the Mac icon; .deb and snap packaging
+
+- The Linux app now uses the ADI-2 Companion (macOS) app icon. The hicolor set
+  in `data/icons/` copies the Mac asset-catalog PNGs byte for byte at 16, 32,
+  64, 128, 256 and 512 px; only 24 and 48 px are downscaled from the 1024 px
+  master. `tests/test_packaging.py` keeps them identical to the Mac assets.
+- Added Debian packaging (`debian/`, dh + pybuild, native 1.1.0) and AppStream
+  metainfo. The package is built on Ubuntu 24.04; lintian --pedantic is clean;
+  its full test suite passes against the installed package under Xvfb on
+  Ubuntu 24.04 and 26.04 and Debian 13.
+- Installing outside a source checkout exposed two latent bugs: the EQ curve
+  needs `python3-gi-cairo` (now a dependency, and listed in the README), and
+  bundled profiles were only found in a checkout (`bundled_profiles_dir()` now
+  also reads `<data dir>/rme-adi2-control/profiles`).
+- Added `snap/snapcraft.yaml` (core24, gnome extension, strict). Confinement
+  needed a session D-Bus slot for the GApplication id and a `/usr/share/alsa`
+  layout for the staged `amidi`. The locally built snap, with `alsa` connected,
+  listed the DAC's MIDI port, synced the live EQ read-only and showed it;
+  nothing was written to the device.
+- New `Linux packages` workflow builds, lints and install-tests the .deb, and
+  builds the snap, on every PR.
+- Next: publishing the snap needs the owner's Snap Store account (name
+  registration, upload) and a store request to auto-connect `alsa`.
+
 ## 2026-11-11 — Prepare the first Store release without device memory
 
 - The isolated settled name-only attempt failed on DAC USB 80 / DSP 55, and the

@@ -1,0 +1,45 @@
+.TH ADI2-EQ 1 "November 2026" "rme-adi2-control 1.1.0" "User Commands"
+.SH NAME
+adi2-eq \- turn an ADI-2 EQ profile into a SysEx message
+.SH SYNOPSIS
+.B adi2-eq
+.RI [ profile.json ]
+.RB [ \-o
+.IR file ]
+.RB [ \-\-binary ]
+.RB [ \-\-send ]
+.RB [ \-\-port
+.IR port ]
+.RB [ \-\-device
+.IR model ]
+.SH DESCRIPTION
+.B adi2-eq
+builds the SysEx block that applies an EQ profile to an RME ADI-2 unit.
+Without a profile it uses the bundled Beyerdynamic DT 1990 Pro profile. The
+message is printed as hex unless written to a file or sent.
+.SH OPTIONS
+.TP
+.BI \-o " file" "\fR, \fP\-\-output " file
+Write the SysEx message to
+.IR file .
+.TP
+.B \-\-binary
+Write raw bytes (a .syx file) instead of hex.
+.TP
+.B \-\-send
+Send the message to the unit with
+.BR amidi (1).
+.TP
+.BI \-\-port " port"
+ALSA raw MIDI port, for example hw:3,0,0. Detected automatically by default.
+.TP
+.BI \-\-device " model"
+Target model:
+.B dac
+(the default),
+.B pro
+or
+.BR pro24 .
+.SH SEE ALSO
+.BR adi2-control (1),
+.BR amidi (1)

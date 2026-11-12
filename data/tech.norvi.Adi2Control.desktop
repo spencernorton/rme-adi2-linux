@@ -5,6 +5,7 @@ Exec=adi2-control
 Icon=tech.norvi.Adi2Control
 StartupWMClass=tech.norvi.Adi2Control
 Terminal=false
+StartupNotify=true
 Type=Application
 Categories=Audio;AudioVideo;
 Keywords=RME;ADI-2;DAC;EQ;equalizer;

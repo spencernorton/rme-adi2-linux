@@ -1,0 +1,90 @@
+name: adi2-control
+title: ADI-2 Control
+version: '1.1.0'
+summary: Remote and EQ for RME ADI-2 DACs
+description: |
+  A native remote control and EQ builder for the RME ADI-2 DAC, ADI-2 Pro
+  and ADI-2/4 Pro, built on RME's published MIDI protocol. It is
+  independent software and is not affiliated with or endorsed by RME.
+
+  - Every output, input and device setting over USB MIDI, synced both ways
+  - Graphical 5-band parametric EQ with a live response curve
+  - Imports Equalizer APO, REW, AutoEq and Squiglink EQ files
+  - Shareable local JSON EQ profiles, and offline editing without a DAC
+  - Watches for the DAC and reconnects when it is switched on
+
+  Turn on MIDI Control in the ADI-2's setup menu and connect it by USB.
+  The snap needs ALSA access to reach the DAC's MIDI port:
+
+      sudo snap connect adi2-control:alsa
+license: MIT
+icon: data/icons/hicolor/512x512/apps/tech.norvi.Adi2Control.png
+website: https://github.com/spencernorton/rme-adi2-linux
+source-code: https://github.com/spencernorton/rme-adi2-linux
+issues: https://github.com/spencernorton/rme-adi2-linux/issues
+contact: https://github.com/spencernorton/rme-adi2-linux/issues
+base: core24
+grade: stable
+confinement: strict
+
+platforms:
+  amd64:
+
+layout:
+  # The staged alsa-lib (for amidi) reads its configuration from here.
+  /usr/share/alsa:
+    bind: $SNAP/usr/share/alsa
+
+slots:
+  # GApplication owns its application id on the session bus.
+  app-id:
+    interface: dbus
+    bus: session
+    name: tech.norvi.Adi2Control
+
+apps:
+  adi2-control:
+    command: bin/adi2-control
+    common-id: tech.norvi.Adi2Control
+    desktop: usr/share/applications/tech.norvi.Adi2Control.desktop
+    extensions: [gnome]
+    plugs: [alsa, home]
+    slots: [app-id]
+    environment:
+      # PyGObject (with cairo) comes from the GNOME 46 runtime.
+      PYTHONPATH: $SNAP/gnome-platform/usr/lib/python3/dist-packages
+  adi2-eq:
+    command: bin/adi2-eq
+    extensions: [gnome]   # its launcher puts the staged amidi's libraries on the path
+    plugs: [alsa, home]
+
+parts:
+  adi2:
+    plugin: python
+    source: .
+    source-type: local
+    build-environment:
+      # The gnome extension points PYTHONPATH at the SDK, which breaks the venv's pip.
+      - PYTHONPATH: ""
+    stage-packages:
+      - alsa-utils   # amidi
+    prime:
+      - -usr/bin/alsabat          # the only user of the staged FFTW libraries
+      - -usr/lib/*/libfftw3*
+      - -usr/lib/*/libgomp.so*    # pulled in only by FFTW
+  data:
+    plugin: dump
+    source: data
+    organize:
+      icons: usr/share/icons
+      tech.norvi.Adi2Control.desktop: usr/share/applications/tech.norvi.Adi2Control.desktop
+      tech.norvi.Adi2Control.metainfo.xml: usr/share/metainfo/tech.norvi.Adi2Control.metainfo.xml
+    stage:
+      - usr/share/icons
+      - usr/share/applications
+      - usr/share/metainfo
+  profiles:
+    plugin: dump
+    source: profiles
+    organize:
+      '*': usr/share/rme-adi2-control/profiles/
