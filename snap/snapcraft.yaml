@@ -1,6 +1,6 @@
 name: adi2-control
 title: ADI-2 Control
-version: '1.1.0'
+version: '1.1.1'
 summary: Remote and EQ for RME ADI-2 DACs
 description: |
   A native remote control and EQ builder for the RME ADI-2 DAC, ADI-2 Pro
@@ -51,6 +51,8 @@ apps:
     plugs: [alsa, home]
     slots: [app-id]
     environment:
+      # Store build: leave out the on-device preset/setup memory controls.
+      ADI2_DEVICE_MEMORY: "0"
       # PyGObject (with cairo) comes from the GNOME 46 runtime.
       PYTHONPATH: $SNAP/gnome-platform/usr/lib/python3/dist-packages
   adi2-eq:

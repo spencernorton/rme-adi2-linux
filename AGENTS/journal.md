@@ -1,3 +1,11 @@
+## 2026-11-12 — Store build leaves out device memory (1.1.1)
+
+- `ADI2_DEVICE_MEMORY=0` removes the Presets page's Device memory panel
+  (EQ slot save/load/naming, setup save/load) and guards its three handlers,
+  matching the Mac App Store release scope. The snap sets it; the .deb and
+  source runs keep the controls. A GUI test covers both states.
+- Version 1.1.1 across pyproject, Debian changelog, snap and AppStream.
+
 ## 2026-11-12 — Linux app takes the Mac icon; .deb and snap packaging
 
 - The Linux app now uses the ADI-2 Companion (macOS) app icon. The hicolor set

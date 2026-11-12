@@ -142,3 +142,22 @@ def test_status_label_ellipsizes_with_tooltip(window):
     long_msg = "Imported profile — " + "; ".join(f"warning {i}" for i in range(10))
     window.set_status(long_msg, True)
     assert window.status_label.get_tooltip_text() == long_msg
+
+
+def _labels(widget):
+    found, child = [], widget.get_first_child()
+    while child is not None:
+        if isinstance(child, Gtk.Label):
+            found.append(child.get_label())
+        found += _labels(child)
+        child = child.get_next_sibling()
+    return found
+
+
+def test_store_build_leaves_out_device_memory(window, monkeypatch):
+    import adi2.app as app
+    assert any("Device memory" in t for t in _labels(window._build_presets_page()))
+    monkeypatch.setattr(app, "DEVICE_MEMORY", False)
+    labels = _labels(window._build_presets_page())
+    assert "Local EQ profiles" in labels
+    assert not any("Device memory" in t for t in labels)
