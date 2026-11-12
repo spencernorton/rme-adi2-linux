@@ -56,6 +56,11 @@
   </branding>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="1.1.2" date="2026-11-12">
+      <description>
+        <p>The snap runs without a session D-Bus name.</p>
+      </description>
+    </release>
     <release version="1.1.1" date="2026-11-12">
       <description>
         <p>Store builds leave out the on-device preset and setup memory controls, which are not yet hardware-qualified.</p>

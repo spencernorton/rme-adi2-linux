@@ -1,6 +1,6 @@
 name: adi2-control
 title: ADI-2 Control
-version: '1.1.1'
+version: '1.1.2'
 summary: Remote and EQ for RME ADI-2 DACs
 description: |
   A native remote control and EQ builder for the RME ADI-2 DAC, ADI-2 Pro
@@ -35,13 +35,6 @@ layout:
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
 
-slots:
-  # GApplication owns its application id on the session bus.
-  app-id:
-    interface: dbus
-    bus: session
-    name: tech.norvi.Adi2Control
-
 apps:
   adi2-control:
     command: bin/adi2-control
@@ -49,7 +42,6 @@ apps:
     desktop: usr/share/applications/tech.norvi.Adi2Control.desktop
     extensions: [gnome]
     plugs: [alsa, home]
-    slots: [app-id]
     environment:
       # Store build: leave out the on-device preset/setup memory controls.
       ADI2_DEVICE_MEMORY: "0"

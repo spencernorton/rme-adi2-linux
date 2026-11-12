@@ -15,7 +15,7 @@ from pathlib import Path
 import gi
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
-from gi.repository import Adw, GLib, Gtk, Gdk, Pango  # noqa: E402
+from gi.repository import Adw, Gio, GLib, Gtk, Gdk, Pango  # noqa: E402
 
 from . import params as P  # noqa: E402
 from . import protocol as proto  # noqa: E402
@@ -1106,7 +1106,10 @@ class Adi2Window(Adw.ApplicationWindow):
 
 
 def main(argv=None):
-    app = Adw.Application(application_id="tech.norvi.Adi2Control")
+    # A strictly confined snap may not own its id on the session bus, so the
+    # snap runs non-unique instead of declaring a store-reviewed D-Bus slot.
+    flags = Gio.ApplicationFlags.NON_UNIQUE if os.environ.get("SNAP") else Gio.ApplicationFlags.DEFAULT_FLAGS
+    app = Adw.Application(application_id="tech.norvi.Adi2Control", flags=flags)
     app.connect("activate", lambda a: Adi2Window(a).present())
     return app.run(argv)
 
