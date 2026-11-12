@@ -1,3 +1,11 @@
+## 2026-11-12 — Snap Store: published without a D-Bus slot (1.1.2)
+
+- `adi2-control` is registered to publisher NorviTech. Upload of 1.1.1 was
+  held for manual review because of the session `dbus` slot
+  ("deny-connection constraint (interface attributes)"). 1.1.2 drops the slot;
+  under `$SNAP` the GApplication runs NON_UNIQUE, so it never claims its bus
+  name. Outside a snap nothing changes.
+
 ## 2026-11-12 — Store build leaves out device memory (1.1.1)
 
 - `ADI2_DEVICE_MEMORY=0` removes the Presets page's Device memory panel

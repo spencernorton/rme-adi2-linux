@@ -1,3 +1,10 @@
+rme-adi2-control (1.1.2) noble; urgency=medium
+
+  * Under a snap, run the GApplication non-unique instead of owning its id
+    on the session bus. No change outside a snap.
+
+ -- Spencer Norton <spencernorton@users.noreply.github.com>  Thu, 12 Nov 2026 19:00:00 +0000
+
 rme-adi2-control (1.1.1) noble; urgency=medium
 
   * ADI2_DEVICE_MEMORY=0 leaves out the on-device preset and setup memory
