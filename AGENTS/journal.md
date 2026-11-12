@@ -17,8 +17,11 @@
   layout for the staged `amidi`. The locally built snap, with `alsa` connected,
   listed the DAC's MIDI port, synced the live EQ read-only and showed it;
   nothing was written to the device.
-- New `Linux packages` workflow builds, lints and install-tests the .deb, and
-  builds the snap, on every PR.
+- New `Linux packages` workflow builds, lints and install-tests the .deb on
+  every PR. A snap job was dropped: on the hosted Ubuntu runner,
+  `snap install lxd` failed twice with "unable to contact snap store". Once
+  the snap name is registered, snapcraft.io's GitHub build service can build
+  `snap/snapcraft.yaml` instead.
 - Next: publishing the snap needs the owner's Snap Store account (name
   registration, upload) and a store request to auto-connect `alsa`.
 
