@@ -190,6 +190,12 @@ class EqCurve(Gtk.DrawingArea):
             cr.move_to(x - 3, y + 4); cr.show_text(str(i + 1))
 
 
+# Store builds (the snap) set ADI2_DEVICE_MEMORY=0: writing and naming the
+# ADI-2's on-device preset slots and setups is not hardware-qualified, so
+# those controls are left out, as in the Mac App Store release.
+DEVICE_MEMORY = os.environ.get("ADI2_DEVICE_MEMORY", "1") != "0"
+
+
 def bundled_profiles_dir():
     """The shipped EQ profiles: a source checkout's own, else the copy that
     install.sh, the .deb or the snap puts in <data dir>/rme-adi2-control."""
@@ -970,6 +976,8 @@ class Adi2Window(Adw.ApplicationWindow):
         local.append(hint)
         page.append(self._panel("Local EQ profiles", local))
         self._refresh_profile_list()
+        if not DEVICE_MEMORY:
+            return page
 
         dev = Gtk.Grid(column_spacing=10, row_spacing=8, margin_start=12,
                        margin_top=8, margin_bottom=10)
@@ -1041,6 +1049,8 @@ class Adi2Window(Adw.ApplicationWindow):
         return True
 
     def _save_device_preset(self, _btn):
+        if not DEVICE_MEMORY:
+            return
         if not self._require_transport():
             return
         slot = int(self.slot_spin.get_value())  # 1..20
@@ -1071,6 +1081,8 @@ class Adi2Window(Adw.ApplicationWindow):
         self.set_status(f"Saved EQ preset {slot} on device", True)
 
     def _load_device_preset(self, _btn):
+        if not DEVICE_MEMORY:
+            return
         if not self._require_transport():
             return
         slot = int(self.slot_spin.get_value())
@@ -1080,6 +1092,8 @@ class Adi2Window(Adw.ApplicationWindow):
         self.set_status(f"Loaded EQ preset {slot} on Phones", True)
 
     def _setup_command(self, load: bool):
+        if not DEVICE_MEMORY:
+            return
         if not self._require_transport():
             return
         n = int(self.setup_spin.get_value())

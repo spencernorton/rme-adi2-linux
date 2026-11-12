@@ -56,6 +56,11 @@
   </branding>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="1.1.1" date="2026-11-12">
+      <description>
+        <p>Store builds leave out the on-device preset and setup memory controls, which are not yet hardware-qualified.</p>
+      </description>
+    </release>
     <release version="1.1.0" date="2026-11-12">
       <description>
         <p>Uses the same app icon as ADI-2 Companion for Mac, and ships as a Debian package and a snap.</p>
