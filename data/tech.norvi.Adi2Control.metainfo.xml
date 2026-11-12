@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>tech.norvi.Adi2Control</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>ADI-2 Control</name>
+  <summary>Remote and EQ for RME ADI-2 DACs</summary>
+  <developer id="io.github.spencernorton">
+    <name>Spencer Norton</name>
+  </developer>
+  <description>
+    <p>
+      A native remote control and EQ builder for the RME ADI-2 DAC, ADI-2 Pro
+      and ADI-2/4 Pro, built on RME's published MIDI protocol. It is
+      independent software and is not affiliated with or endorsed by RME.
+    </p>
+    <ul>
+      <li>Every output, input and device setting over USB MIDI, synced both ways</li>
+      <li>Graphical 5-band parametric EQ with a live response curve</li>
+      <li>Imports Equalizer APO, REW, AutoEq and Squiglink EQ files</li>
+      <li>Shareable local JSON EQ profiles, and offline editing without a DAC</li>
+      <li>Watches for the DAC and reconnects when it is switched on</li>
+    </ul>
+    <p>
+      Turn on MIDI Control in the ADI-2's setup menu and connect it by USB.
+    </p>
+  </description>
+  <launchable type="desktop-id">tech.norvi.Adi2Control.desktop</launchable>
+  <provides>
+    <binary>adi2-control</binary>
+    <binary>adi2-eq</binary>
+  </provides>
+  <url type="homepage">https://github.com/spencernorton/rme-adi2-linux</url>
+  <url type="bugtracker">https://github.com/spencernorton/rme-adi2-linux/issues</url>
+  <url type="vcs-browser">https://github.com/spencernorton/rme-adi2-linux</url>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Graphical EQ for the phones output</caption>
+      <image>https://raw.githubusercontent.com/spencernorton/rme-adi2-linux/main/data/phones-eq.png</image>
+    </screenshot>
+  </screenshots>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+  <keywords>
+    <keyword>RME</keyword>
+    <keyword>ADI-2</keyword>
+    <keyword>DAC</keyword>
+    <keyword>equalizer</keyword>
+    <keyword>MIDI</keyword>
+  </keywords>
+  <branding>
+    <color type="primary" scheme_preference="light">#8fd6f5</color>
+    <color type="primary" scheme_preference="dark">#16233a</color>
+  </branding>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="1.1.0" date="2026-11-12">
+      <description>
+        <p>Uses the same app icon as ADI-2 Companion for Mac, and ships as a Debian package and a snap.</p>
+      </description>
+    </release>
+    <release version="1.0.0" date="2026-11-10">
+      <description>
+        <p>First release.</p>
+      </description>
+    </release>
+  </releases>
+</component>

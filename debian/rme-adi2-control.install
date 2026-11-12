@@ -1,0 +1,4 @@
+data/icons/hicolor usr/share/icons
+data/tech.norvi.Adi2Control.desktop usr/share/applications
+data/tech.norvi.Adi2Control.metainfo.xml usr/share/metainfo
+profiles usr/share/rme-adi2-control

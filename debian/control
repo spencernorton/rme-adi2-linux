@@ -1,0 +1,37 @@
+Source: rme-adi2-control
+Section: sound
+Priority: optional
+Maintainer: Spencer Norton <spencernorton@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               pybuild-plugin-pyproject,
+               python3-all,
+               python3-setuptools,
+               python3-pytest <!nocheck>,
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/spencernorton/rme-adi2-linux
+Vcs-Browser: https://github.com/spencernorton/rme-adi2-linux
+Vcs-Git: https://github.com/spencernorton/rme-adi2-linux.git
+
+Package: rme-adi2-control
+Architecture: all
+Depends: ${misc:Depends},
+         ${python3:Depends},
+         alsa-utils,
+         gir1.2-adw-1 (>= 1.5),
+         gir1.2-gtk-4.0,
+         python3-gi,
+         python3-gi-cairo,
+Suggests: pipewire, wireplumber,
+Description: remote control and EQ builder for RME ADI-2 DACs
+ A GTK4 remote, parametric EQ builder and bit-perfect PipeWire setup for
+ the RME ADI-2 DAC, ADI-2 Pro and ADI-2/4 Pro, using RME's published
+ USB MIDI SysEx protocol.
+ .
+ It reads and writes every output, input and device parameter, draws a
+ live 5-band EQ curve, imports Equalizer APO, REW, AutoEq and Squiglink
+ EQ files, and keeps shareable local JSON profiles. It also works offline
+ as a profile builder. The adi2-eq command turns a profile into SysEx.
+ .
+ This is independent software, not affiliated with or endorsed by RME.

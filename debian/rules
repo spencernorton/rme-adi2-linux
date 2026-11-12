@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+
+export PYBUILD_NAME=adi2
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+# The suite adds src/ to sys.path itself; GUI cases skip without a display.
+override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	env -u DISPLAY -u WAYLAND_DISPLAY python3 -m pytest -q -p no:cacheprovider tests
+endif

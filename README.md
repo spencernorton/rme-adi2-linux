@@ -63,10 +63,31 @@ everything to 48 kHz.
 ## Requirements
 
 - Linux with ALSA (`alsa-utils` for `amidi`), Python ≥ 3.10, GTK4 +
-  libadwaita (PyGObject). On Ubuntu: `sudo apt install python3-gi
+  libadwaita (PyGObject). On Ubuntu: `sudo apt install python3-gi python3-gi-cairo
   gir1.2-gtk-4.0 gir1.2-adw-1 alsa-utils`
 - On the ADI-2: **Setup → Device Mode / DSD → MIDI Control = On**
   (on the DAC: SETUP → Options → Device Mode / DSD), connected by USB.
+
+## Install
+
+**Ubuntu 24.04 or newer, or Debian 13:** download
+`rme-adi2-control_1.1.0_all.deb` from the
+[latest release](https://github.com/spencernorton/rme-adi2-linux/releases/latest) and run
+
+```bash
+sudo apt install ./rme-adi2-control_1.1.0_all.deb
+```
+
+It installs `adi2-control` (with its menu entry) and `adi2-eq`, and puts the
+PipeWire drop-ins in `/usr/share/doc/rme-adi2-control/examples/pipewire/`.
+To build it yourself: `sudo apt install debhelper dh-python
+pybuild-plugin-pyproject python3-all python3-pytest`, then
+`dpkg-buildpackage -us -uc -b`.
+
+**Snap:** `snap/snapcraft.yaml` builds a strictly confined snap with
+`snapcraft pack`. The snap reaches the DAC's MIDI port through the `alsa`
+interface, which you connect once:
+`sudo snap connect adi2-control:alsa`.
 
 ## Run
 

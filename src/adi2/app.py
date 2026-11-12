@@ -190,6 +190,18 @@ class EqCurve(Gtk.DrawingArea):
             cr.move_to(x - 3, y + 4); cr.show_text(str(i + 1))
 
 
+def bundled_profiles_dir():
+    """The shipped EQ profiles: a source checkout's own, else the copy that
+    install.sh, the .deb or the snap puts in <data dir>/rme-adi2-control."""
+    candidates = [Path(__file__).parents[2] / "profiles"]
+    if os.environ.get("SNAP"):
+        candidates.append(Path(os.environ["SNAP"]) / "usr/share/rme-adi2-control/profiles")
+    data_dirs = [os.environ.get("XDG_DATA_HOME") or str(Path.home() / ".local/share")]
+    data_dirs += (os.environ.get("XDG_DATA_DIRS") or "/usr/local/share:/usr/share").split(":")
+    candidates += [Path(d) / "rme-adi2-control" / "profiles" for d in data_dirs if d]
+    return next((c for c in candidates if c.is_dir()), None)
+
+
 class Adi2Window(Adw.ApplicationWindow):
     def __init__(self, app):
         super().__init__(application=app, title="ADI-2 Control")
@@ -901,8 +913,8 @@ class Adi2Window(Adw.ApplicationWindow):
     def _profile_dirs(self):
         user = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "rme-adi2" / "profiles"
         user.mkdir(parents=True, exist_ok=True)
-        bundled = Path(__file__).parents[2] / "profiles"
-        return [bundled, user]
+        bundled = bundled_profiles_dir()
+        return [bundled, user] if bundled else [user]
 
     def _list_profiles(self):
         found = []
